@@ -4,19 +4,18 @@ using UnityEngine;
 public class GameManager : MonoBehaviour
 {
     public static GameManager instance;
-    
+
     // Références aux éléments UI
     public TMP_Text timerText; // Pour afficher le temps restant
     public TMP_Text scoreText; // Pour afficher le score
-    
-    public float timeLimit = 60f; // Temps limite en secondes
+
+    public float timeLimit = 60f;
     private float timeRemaining;
     private bool gameEnded = false;
-    private int score = 0; 
+    private int score = 0;
 
     void Awake()
     {
-        // Assurez-vous qu'il n'y a qu'une seule instance de GameManager
         if (instance == null)
         {
             instance = this;
@@ -31,21 +30,21 @@ public class GameManager : MonoBehaviour
     void Start()
     {
         timeRemaining = timeLimit;
-        UpdateTimerText(); // Met à jour le texte du chronomètre au début
-        UpdateScoreText(); // Met à jour le texte du score au début
+        UpdateTimerText(); // Initialisation du chronomètre
+        UpdateScoreText(); // Initialisation du score
     }
 
     void Update()
     {
         if (gameEnded) return;
 
-        timeRemaining -= Time.deltaTime; // Réduit le temps restant
+        timeRemaining -= Time.deltaTime;
         if (timeRemaining <= 0)
         {
             timeRemaining = 0;
-            EndGame(false); // Termine le jeu si le temps est écoulé
+            EndGame(false);
         }
-        UpdateTimerText(); // Met à jour le texte du chronomètre
+        UpdateTimerText(); // Mise à jour du chronomètre
     }
 
     void UpdateTimerText()
@@ -65,21 +64,18 @@ public class GameManager : MonoBehaviour
         gameEnded = true;
         if (won)
         {
-            // Logique pour victoire
             Debug.Log("Vous avez gagné !");
         }
         else
         {
-            // Logique pour défaite
             Debug.Log("Vous avez perdu !");
         }
     }
 
     public void CollectItem()
     {
-        // Ajouter des points lorsqu'un objet est collecté
-        score += 10; // Ajoute 10 points (modifiez cette valeur selon vos besoins)
-        UpdateScoreText(); // Met à jour le texte du score
+        score += 10;
+        UpdateScoreText();
     }
 
     private void UpdateScoreText()
