@@ -7,19 +7,16 @@ public class PlayerController : MonoBehaviour
 
     void Start()
     {
-        rb = GetComponent<Rigidbody>(); // Pour 3D
-        // rb = GetComponent<Rigidbody2D>(); // Pour 2D
+        rb = GetComponent<Rigidbody>();
     }
 
-    void Update()
+    void FixedUpdate()
     {
         float horizontal = Input.GetAxis("Horizontal");
         float vertical = Input.GetAxis("Vertical");
 
-        Vector3 move = new Vector3(horizontal, 0, vertical) * moveSpeed * Time.deltaTime; // Pour 3D
-        // Vector2 move = new Vector2(horizontal, vertical) * moveSpeed * Time.deltaTime; // Pour 2D
+        Vector3 move = new Vector3(horizontal, 0, vertical) * moveSpeed * Time.deltaTime;
 
-        rb.MovePosition(transform.position + move); // Pour 3D
-        // rb.MovePosition(rb.position + move); // Pour 2D
+        rb.MovePosition(rb.position + move);
     }
 }

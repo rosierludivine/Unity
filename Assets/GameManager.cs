@@ -1,5 +1,6 @@
 using TMPro;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 public class GameManager : MonoBehaviour
 {
@@ -8,22 +9,25 @@ public class GameManager : MonoBehaviour
     // Références aux éléments UI
     public TMP_Text timerText; // Pour afficher le temps restant
     public TMP_Text scoreText; // Pour afficher le score
+    public AudioSource collectSound; // Référence à l'AudioSource pour le bruit de collecte
 
-    public float timeLimit = 60f;
+    public float timeLimit = 60f; // Temps limite en secondes
     private float timeRemaining;
     private bool gameEnded = false;
     private int score = 0;
+    private int totalItems = 9; // Nombre total de pièces à collecter
+    private int collectedItems = 0; // Nombre de pièces collectées
 
     void Awake()
     {
         if (instance == null)
         {
             instance = this;
-            DontDestroyOnLoad(gameObject);
+            DontDestroyOnLoad(gameObject); // Ne pas détruire ce GameObject entre les scènes
         }
         else
         {
-            Destroy(gameObject);
+            Destroy(gameObject); // Assurer qu'il n'y ait qu'une seule instance
         }
     }
 
@@ -42,7 +46,14 @@ public class GameManager : MonoBehaviour
         if (timeRemaining <= 0)
         {
             timeRemaining = 0;
-            EndGame(false);
+            if (collectedItems >= totalItems)
+            {
+                EndGame(true); // Gagner
+            }
+            else
+            {
+                EndGame(false); // Perdre
+            }
         }
         UpdateTimerText(); // Mise à jour du chronomètre
     }
@@ -64,18 +75,34 @@ public class GameManager : MonoBehaviour
         gameEnded = true;
         if (won)
         {
-            Debug.Log("Vous avez gagné !");
+            SceneManager.LoadScene("Gagner"); // Charger la scène de victoire
         }
         else
         {
-            Debug.Log("Vous avez perdu !");
+            SceneManager.LoadScene("GameOver"); // Charger la scène de défaite
         }
     }
 
     public void CollectItem()
     {
         score += 10;
+        collectedItems++;
         UpdateScoreText();
+        
+        // Jouer le bruit de collecte uniquement lors de la collecte
+        if (collectSound != null)
+        {
+            collectSound.Play();
+        }
+
+        // Vérifier si toutes les pièces sont collectées
+        if (collectedItems >= totalItems)
+        {
+            if (timeRemaining > 0) // Assurez-vous que le temps n'est pas écoulé
+            {
+                EndGame(true); // Gagner
+            }
+        }
     }
 
     private void UpdateScoreText()
@@ -88,5 +115,10 @@ public class GameManager : MonoBehaviour
         {
             Debug.LogWarning("Score Text is not assigned!");
         }
+    }
+
+    public void SetTotalItems(int count)
+    {
+        totalItems = count;
     }
 }

@@ -4,12 +4,16 @@ using UnityEngine;
 
 public class ramasser : MonoBehaviour
 {    
-    void OnTriggerEnter(Collider other)
+    public void OnTriggerEnter(Collider other)
     {
         if (other.CompareTag("Player"))
         {
-            GameManager.instance.CollectItem();
-            Destroy(gameObject);
+            Debug.Log("Piece collectée"); // Pour vérifier que la méthode est appelée
+            if (GameManager.instance != null)
+            {
+                GameManager.instance.CollectItem();
+                Destroy(gameObject); // Détruire la pièce après la collecte
+            }
         }
     }
 }
